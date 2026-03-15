@@ -1,9 +1,29 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os"
+
+	"github.com/jackc/pgx/v5"
 )
+
+var db *pgx.Conn
+
+func connectDB() {
+	connStr := os.Getenv("DATABASE_URL")
+	var err error
+
+	db, err = pgx.Connect(context.Background(), connStr)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Connected to PostgreSQL")
+
+}
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Life Heatmap server is running buddy!")
